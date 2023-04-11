@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# input files
+*.xlsx
+
+# logging and debug files
+*.log
+debug.txt
