@@ -134,3 +134,6 @@ dmypy.json
 # logging and debug files
 *.log
 debug.txt
+
+# virtual environment
+venv
