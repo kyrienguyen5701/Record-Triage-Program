@@ -132,8 +132,7 @@ dmypy.json
 *.xlsx
 
 # logging and debug files
-*.log
-debug.txt
+logs
 
 # virtual environment
 venv
