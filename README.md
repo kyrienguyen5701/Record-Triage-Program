@@ -38,7 +38,7 @@ cd "%~dp0"\java --> cd "%~dp0"\src
 
 March 28, 2023
 Son (Kyrie) Nguyen  
-Finish the first version for Python program. If your computer does not have Python, you can try running `install.cmd` as an **administrator**. Wait until you are prompted to press any key, then you can run `setup.cmd` to install extra packages for the program.
+Finish the first version for Python program. If your computer does not have Python, you need to run `install.cmd` and follow the Python Installer to install Python. Once Python is installed, you can run `setup.cmd` to install extra packages for the program.
 
 The big difference of the main program `main.cmd` is that the user can name the output file. If no extension is detected in that name, the file extension is set to `.xlsx`
 
