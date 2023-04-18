@@ -40,7 +40,9 @@ March 28, 2023
 Son (Kyrie) Nguyen  
 Finish the first version for Python program. If your computer does not have Python, you need to run `install.cmd` and follow the Python Installer to install Python. Once Python is installed, you can run `setup.cmd` to install extra packages for the program.
 
-The big difference of the main program `main.cmd` is that the user can name the output file. If no extension is detected in that name, the file extension is set to `.xlsx`
+The big difference of the main program `main.cmd` is that the user can name the output file. If no extension is detected in that name, the file extension is set to `.xlsx`. If no input is detected, the default output file will be in the same folder as the input file, with the suffix `_triaged`.
+
+Note that there should NOT be any SPACE in both the input file path and output file path, as they can cause reading problems for the program. If you put your input files in a folder with SPACE in its name, please kindly move them to another folder.
 
 There is also a Python script for debugging, where user can open the command line and run as follows:
 
