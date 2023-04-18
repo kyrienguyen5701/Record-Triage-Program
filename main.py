@@ -5,14 +5,10 @@ from bib import Bib
 from triage import columns_to_eval_funcs
 import os
 import warnings
+from config import *
 
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
-ROOT = os.path.dirname(__file__)
-DEFAULT_INPUT_FILE = os.path.join(ROOT, 'results.xlsx')
-DEFAULT_OUTPUT_FILE = os.path.join(ROOT, 'triage_output.xlsx')
-ACCEPTED_EXTENSIONS = ('csv', 'xlsx', 'xls')
-DEFAULT_EXT = 'xlsx'
 READ_ENGINES = {
   'csv': pd.read_csv,
   'xlsx': pd.read_excel,
