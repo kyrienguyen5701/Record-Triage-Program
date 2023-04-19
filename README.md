@@ -59,3 +59,7 @@ There is also the interactive mode that allows user to enter one MMS ID at a tim
 For more options on using `debug.py`, user can run `py debug.py -h` to get a more detailed description.
 
 Note that `debug.py` is a WIP so please let me know about your feedback.
+
+April 17, 2023
+Son (Kyrie) Nguyen  
+Debug or logging files are now under `./logs`.
