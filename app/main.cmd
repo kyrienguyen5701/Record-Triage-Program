@@ -5,6 +5,6 @@ if "%InputFilePath%" == "" set "InputFilePath=%~dp0results.xlsx"
 if "%OutputFilePath%" == "" set "OutputFilePath=%InputFilePath:~0,-5%_triaged.xlsx"
 echo Input file: %InputFilePath%
 echo Output file: %OutputFilePath%
-py main.py -if %InputFilePath% -of %OutputFilePath%
+py Lib\main.py -if %InputFilePath% -of %OutputFilePath%
 move %OutputFilePath% outputs
 pause

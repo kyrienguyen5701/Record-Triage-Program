@@ -1,3 +1,3 @@
 @Echo off
 echo Interactive debug mode
-py debug.py -i
+py Lib\debug.py -i
