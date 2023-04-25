@@ -1,6 +1,7 @@
 import os
 
 ROOT = os.path.dirname(__file__)
+BATCH_SIZE = 10
 APP_ROOT = os.path.join(ROOT, '..')
 DEFAULT_INPUT_FILE = os.path.join(APP_ROOT, 'results.xlsx')
 DEFAULT_OUTPUT_FILE = os.path.join(APP_ROOT, 'results_triaged.xlsx')

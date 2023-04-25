@@ -73,23 +73,28 @@ if __name__ == '__main__':
   input_df[mmsid_col] = input_df[mmsid_col].apply(lambda mmsID: str(mmsID))
 
   output_path = fill_ext(os.path.join(ROOT, args['output_file']))
-  output_df = pd.DataFrame({
-    'MMS ID': input_df[mmsid_col],
-    'Title': input_df['title'],
-    'Brief_Level': 2 * np.ones((n,)),
-    'Overall_Condition': np.full((n,), np.nan),
-    'Call_Assessment': np.full((n,), np.nan),
-    'Floor_Status': np.full((n,), np.nan),
-    'Size_Status': np.full((n,), np.nan),
-    'Format_Assessment': np.full((n,), np.nan),
-    'Coding_Problems': np.full((n,), np.nan)
-  })
-  bib_series = input_df[mmsid_col].apply(lambda mmsID: Bib(mmsID))
+  output_df = pd.DataFrame()
   
   print('Evaluating ...\n')
-  for col, func in columns_to_eval_funcs.items():
-    vectorized_func = np.vectorize(func)
-    output_df[col] = vectorized_func(bib_series)
-
-  save_df(output_df, output_path)
+  for start_id in range(0, n, BATCH_SIZE):
+    end_id = min(start_id + BATCH_SIZE, n)
+    df_size = min(BATCH_SIZE, end_id - start_id)
+    print(f'Processing mmsID from {start_id} to {end_id} ...')
+    batch_df = pd.DataFrame({
+      'MMS ID': input_df[mmsid_col][start_id:end_id],
+      'Title': input_df['title'][start_id:end_id],
+      'Brief_Level': 2 * np.ones((df_size,)),
+      'Overall_Condition': np.full((df_size,), np.nan),
+      'Call_Assessment': np.full((df_size,), np.nan),
+      'Floor_Status': np.full((df_size,), np.nan),
+      'Size_Status': np.full((df_size,), np.nan),
+      'Format_Assessment': np.full((df_size,), np.nan),
+      'Coding_Problems': np.full((df_size,), np.nan)
+    })
+    bib_series = input_df[mmsid_col][start_id:end_id].apply(lambda mmsID: Bib(mmsID))
+    for col, func in columns_to_eval_funcs.items():
+      vectorized_func = np.vectorize(func)
+      batch_df[col] = vectorized_func(bib_series)
+    output_df = pd.concat([output_df, batch_df])
+    save_df(output_df, output_path)
   
