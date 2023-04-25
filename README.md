@@ -63,3 +63,40 @@ Note that `debug.py` is a WIP so please let me know about your feedback.
 April 17, 2023
 Son (Kyrie) Nguyen  
 Debug or logging files are now under `./logs`.
+
+April 25, 2023
+Son (Kyrie) Nguyen  
+Add script `scripts\update.cmd` to download newest code from Github (WIP).
+
+Re-structuralize the whole project to better separate contents:
+
+- Scripts to modify/update the project is in `scripts`
+- The main applications are now under `app` to separate end-users from Python modules.
+- Triaged outputs are now in `app\outputs`
+
+New project structure:
+
+```python
+📦app
+ ┣ 📂logs
+ ┣ 📂outputs
+ ┣ 📂src
+ ┃ ┣ 📜.env
+ ┃ ┣ 📜bib.py
+ ┃ ┣ 📜config.py
+ ┃ ┣ 📜debug.py
+ ┃ ┣ 📜logger.py
+ ┃ ┣ 📜main.py
+ ┃ ┣ 📜rule.py
+ ┃ ┣ 📜test.py
+ ┃ ┗ 📜triage.py
+ ┣ 📜debug_interactive.cmd
+ ┗ 📜main.cmd
+
+📦scripts
+ ┣ 📜install.cmd
+ ┣ 📜setup.cmd
+ ┗ 📜update.cmd
+
+📜requirements.txt
+```
