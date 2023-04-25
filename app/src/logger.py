@@ -50,3 +50,5 @@ class TriageLogger(logging.Logger):
     }
     for hdl in self.hdls.values():
       self.addHandler(hdl)
+
+bib_logger = TriageLogger('bib')

@@ -4,7 +4,7 @@ from almapipy import AlmaCnxn
 from dotenv import load_dotenv
 import os
 import rule
-from logger import TriageLogger
+from logger import bib_logger
 import traceback
 
 env_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -14,8 +14,6 @@ API_KEY = os.getenv('ALMA_API_KEY')
 FORMAT = 'json'
 alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
-
-logger = TriageLogger('bib')
 
 class Field:
   
@@ -69,9 +67,9 @@ class DataField(Field):
       return False
     except Exception as e:
       tag = self.data['@tag']
-      logger.critical(f'Something wrong with data field {tag}{code} of {self.mmsID}')
-      logger.error(traceback.format_exc())
-      logger.warn(self.data)
+      bib_logger.critical(f'Something wrong with data field {tag}{code} of {self.mmsID}')
+      bib_logger.error(traceback.format_exc())
+      bib_logger.warn(self.data)
       return False
   
 # may need to re-consider this implementation
@@ -88,6 +86,7 @@ class Bib:
     
   def create_bib(self, mmsID: str) -> None:
     self.bib = alma.bibs.catalog.get(mmsID)
+    bib_logger.info(f'Getting information for {mmsID} ...')
     marc_xml = self.bib['anies'][0]
     self.marc = xmltodict.parse(marc_xml)['record']
     self.leader = self.marc['leader']
@@ -219,8 +218,8 @@ class Bib:
       # default value
       return 2
     except Exception as e:
-      logger.critical(f'Cannot compute brief level for {self.bib["mms_id"]}. Return 2 as default')
-      logger.error(traceback.format_exc())
+      bib_logger.critical(f'Cannot compute brief level for {self.bib["mms_id"]}. Return 2 as default')
+      bib_logger.error(traceback.format_exc())
       return 2
     
   def get_data_field(self, tag: str, code=None) -> DataField:
@@ -252,8 +251,8 @@ class Bib:
       return DataField(self.bib['mms_id'])
     except Exception as e:
       code = code if code else ''
-      logger.critical(f'Something wrong with data field {tag}{code} of {self.bib["mms_id"]}.')
-      logger.error(traceback.format_exc())
+      bib_logger.critical(f'Something wrong with data field {tag}{code} of {self.bib["mms_id"]}.')
+      bib_logger.error(traceback.format_exc())
       return DataField(self.bib['mms_id'])
   
   def data_field_exists_more_than_once(self, tag: str) -> bool:
@@ -276,6 +275,6 @@ class Bib:
             return True
       return False
     except Exception as e:
-      logger.critical(f'Something wrong with data field {tag} of {self.bib["mms_id"]}.')
-      logger.error(traceback.format_exc())
+      bib_logger.critical(f'Something wrong with data field {tag} of {self.bib["mms_id"]}.')
+      bib_logger.error(traceback.format_exc())
       return False
