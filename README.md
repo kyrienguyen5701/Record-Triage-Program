@@ -38,11 +38,14 @@ cd "%~dp0"\java --> cd "%~dp0"\src
 
 March 28, 2023
 Son (Kyrie) Nguyen  
-Finish the first version for Python program. If your computer does not have Python, you need to run `install.cmd` and follow the Python Installer to install Python. Once Python is installed, you can run `setup.cmd` to install extra packages for the program.
+Finish the first version for Python program.  
+If your computer does not have Python, you need to run `install.cmd` and follow the Python Installer to install Python. Once Python is installed, you can run `setup.cmd` to install extra packages and folders for the program.
 
-The big difference of the main program `main.cmd` is that the user can name the output file. If no extension is detected in that name, the file extension is set to `.xlsx`. If no input is detected, the default output file will be in the same folder as the input file, with the suffix `_triaged`.
+There is still one last thing - this program requires an API key from Ex Libris for data fetching. Please contact [Joanna DiPasquale](https://www.union.edu/schaffer-library/faculty-staff/joanna-dipasquale) for further information. Once you get the API key, you can change the value in `sample.env` and rename the file to `.env`
 
-Note that there should NOT be any SPACE in both the input file path and output file path, as they can cause reading problems for the program. If you put your input files in a folder with SPACE in its name, please kindly move them to another folder.
+A big improvement of the main program `main.cmd` is that the user can name the output file. If no extension is detected in that name, the file extension is set to `.xlsx`. If no input is detected, the default output file will be in the same folder as the input file, with the suffix `_triaged`.
+
+Note that there **MUST BE NO SPACE** in both the input file path and output file path, as they can cause reading problems for the program (blame Windows on this). If you put your input files in a folder with SPACE in its name, please kindly move them to another folder.
 
 There is also a Python script for debugging, where user can open the command line and run as follows:
 
@@ -66,17 +69,22 @@ Debug or logging files are now under `./logs`.
 
 April 25, 2023
 Son (Kyrie) Nguyen  
-Add script `scripts\update.cmd` to download newest code from Github (WIP).
+Add script `scripts\update.cmd` to download newest code from Github. This is still **WIP** so unless you know what you are doing, **DON'T** run this until a developer tells you to.
 
 Re-structuralize the whole project to better separate contents:
 
-- Scripts to modify/update the project is in `scripts`
+- Scripts to modify/update the project is in `scripts` (unless you are a developer, you don't really touch this folder)
 - The main applications are now under `app` to separate end-users from Python modules.
-- Triaged outputs are now in `app\outputs`
+- Triaged outputs are now in `app\outputs`.
+- Logging outputs are now in `app\logs`.
 
-New project structure:
+June 2, 2023
+Son (Kyrie) Nguyen  
+Update `scripts\update.cmd` to create backups. It is less scarier to run this now I guess.
 
-```python
+Project structure:
+
+```bash
 📦app
  ┣ 📂logs
  ┣ 📂outputs
@@ -91,7 +99,7 @@ New project structure:
  ┃ ┣ 📜test.py
  ┃ ┗ 📜triage.py
  ┣ 📜debug_interactive.cmd
- ┗ 📜main.cmd
+ ┗ 📜main.cmd <-- The main program 
 
 📦scripts
  ┣ 📜install.cmd
