@@ -137,3 +137,6 @@ outputs
 
 # virtual environment
 venv
+
+# backup dir
+backup_*
