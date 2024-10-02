@@ -245,14 +245,17 @@ class Triage:
   def eval_OCLC(bib: Bib) -> str:
      
      df_035 = bib.get_data_field(TAG_FOR_OCLC_NUMBER, 'a').get_text()
-     OCLC = df_035.split(')')[1]
+     OCLC = df_035.split(')')[1] # OCLC number is returned as (OCoLC)#########. This takes care of that formatting. May want to look for multiple 035 entries?
      if df_035 == None:
         to_add = "Missing OCLC Number"
-     else:
+     elif OCLC.isnumeric():
         to_add = OCLC
+     else:
+        to_add = "OCLC not readable"
 
      return to_add
-        
+      
+    
   
 columns_to_eval_funcs = {
   'Brief_Level': Triage.compute_brief_level,
