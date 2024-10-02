@@ -255,6 +255,30 @@ class Bib:
       bib_logger.critical(f'Something wrong with data field {tag}{code} of {self.bib["mms_id"]}.')
       bib_logger.error(traceback.format_exc())
       return DataField(self.bib['mms_id'])
+    
+  def get_control_field(self, tag: str, code=None) -> DataField:
+    """
+    Returns a DataField object -> one of the 3 datafields in each Alma entry dependent on @tag
+
+    Params:
+        tag (str): The @tag to search by (currently one of three - 001, 005, 008)
+        code (str): Not yet implemented. It is not yet clear wether this is necessary for control fields
+
+    Returns:
+        Field: A Field object with the specified @tag
+            or an empty Field if no matching DataField is found.
+
+    """
+    try:
+      for control_field in self.control_field:
+        if control_field['@tag'] == tag:
+          df_obj = DataField(self.bib['mms_id'], control_field)
+          return df_obj
+    except Exception as e:
+      bib_logger.critical(f'Something wrong with control field {tag}{code} of {self.bib["mms_id"]}.')
+      bib_logger.error(traceback.format_exc())
+      return DataField(self.bib['mms_id'])
+
   
   def data_field_exists_more_than_once(self, tag: str) -> bool:
     """
