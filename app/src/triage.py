@@ -254,6 +254,13 @@ class Triage:
         to_add = "OCLC not readable"
 
      return to_add
+  
+  @staticmethod
+  def compare_008(bib: Bib) -> str:
+     
+    df_008 = bib.get_control_field('008').get_text()
+    
+    return df_008
       
     
   
@@ -265,5 +272,6 @@ columns_to_eval_funcs = {
   'Size_Status': Triage.eval_size,
   'Format_Assessment': Triage.eval_format,
   'Coding_Problems': Triage.eval_coding,
-  'OCLC_Number' : Triage.eval_OCLC
+  'OCLC_Number' : Triage.eval_OCLC,
+  '008' : Triage.compare_008
 }
