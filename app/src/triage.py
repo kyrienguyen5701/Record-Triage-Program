@@ -1,5 +1,5 @@
 from __future__ import annotations
-from bib import Bib, TAG_FOR_CALL_NUMBER
+from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER
 import rule
 
 OVERSIZE_ff_HEIGHT_MIN = 45
@@ -239,6 +239,21 @@ class Triage:
       return to_add
     return ''
   
+
+  # Start of the OCLC number evaluation
+  @staticmethod
+  def eval_OCLC(bib: Bib) -> str:
+     
+     df_035 = bib.get_data_field(TAG_FOR_OCLC_NUMBER, 'a').get_text()
+     OCLC = df_035.split(')')[1]
+     if df_035 == None:
+        to_add = "Missing OCLC Number"
+     else:
+        to_add = OCLC
+
+     return to_add
+        
+  
 columns_to_eval_funcs = {
   'Brief_Level': Triage.compute_brief_level,
   'Overall_Condition': Triage.eval_brief_level,
@@ -246,5 +261,6 @@ columns_to_eval_funcs = {
   'Floor_Status': Triage.eval_location,
   'Size_Status': Triage.eval_size,
   'Format_Assessment': Triage.eval_format,
-  'Coding_Problems': Triage.eval_coding
+  'Coding_Problems': Triage.eval_coding,
+  'OCLC_Number' : Triage.eval_OCLC
 }
