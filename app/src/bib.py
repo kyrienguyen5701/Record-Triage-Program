@@ -14,6 +14,7 @@ API_KEY = os.getenv('ALMA_API_KEY')
 FORMAT = 'json'
 alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
+TAG_FOR_OCLC_NUMBER = '035'
 
 class Field:
   
