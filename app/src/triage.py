@@ -259,7 +259,8 @@ class Triage:
   def compare_008(bib: Bib) -> str:
      
     df_008 = bib.get_control_field('008').get_text()
-    
+    # print("-" + df_008 + "-") # Useful for understanding the length and nuances of received 008s.
+    # print(len(df_008)) # The 008s do not fill with whitespace so may be shorter it there are blanks at the start or end
     return df_008
       
     
