@@ -16,6 +16,9 @@ FORMAT = 'json'
 alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
 TAG_FOR_OCLC_NUMBER = '035'
+TAG_FOR_ILLUSTRATIONS = '300'
+TAG_FOR_INDEX = '504'
+TAG_FOR_LANG = '040'
 
 
 # Lays out the format in which the 008 is received. The numbers correspont to the number of characters in the string that represent that field
@@ -26,11 +29,11 @@ FORMAT_008 = {
   "Date_1" : 4,
   "Date_2" : 4,
   "Place_pub" : 3,
-  "Ill_1" : 1,
-  "Ill_2" : 1,
-  "Ill_3" : 1,
-  "Ill_4" : 1,
-  "Target_aud" : 1,
+  "Illustrations_1" : 1,
+  "Illustrations_2" : 1,
+  "Illustrations_3" : 1,
+  "Illustrations_4" : 1,
+  "Target_audience" : 1,
   "Form" : 1,
   "Nature_1" : 1,
   "Nature_2" : 1,
@@ -344,7 +347,7 @@ class Bib:
     Item = {}
 
     for key in FORMAT_008.keys():
-      print(str_008)
+      # print(str_008)
       temp = ""
       for chars in range (0, FORMAT_008[key]):
         try:
@@ -352,5 +355,7 @@ class Bib:
         except Exception:
           temp = ""
       Item[key] = temp # This creates a dictionary of the 008 entries. Needs appending to a dataframe
+
+    return Item
 
 
