@@ -1,5 +1,5 @@
 from __future__ import annotations
-from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER
+from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER, TAG_FOR_ILLUSTRATIONS, TAG_FOR_INDEX, TAG_FOR_LANG
 import rule
 
 OVERSIZE_ff_HEIGHT_MIN = 45
@@ -245,23 +245,69 @@ class Triage:
   def eval_OCLC(bib: Bib) -> str:
      
      df_035 = bib.get_data_field(TAG_FOR_OCLC_NUMBER, 'a').get_text()
-     OCLC = df_035.split(')')[1] # OCLC number is returned as (OCoLC)#########. This takes care of that formatting. May want to look for multiple 035 entries?
-     if df_035 == None:
-        to_add = "Missing OCLC Number"
-     elif OCLC.isnumeric():
-        to_add = OCLC
-     else:
+     try:
+      OCLC = df_035.split(')')[1] # OCLC number is returned as (OCoLC)#########. This takes care of that formatting. May want to look for multiple 035 entries?
+      if df_035 == None:
+          to_add = "Missing OCLC Number"
+      elif OCLC.isnumeric():
+          to_add = OCLC
+      else:
+          to_add = "OCLC not readable"
+     except Exception:
         to_add = "OCLC not readable"
 
      return to_add
   
   @staticmethod
+  def eval_index(bib: Bib) -> str:
+    field_index = bib.get_data_field(TAG_FOR_INDEX).get_text()
+    if "Index" in field_index:
+       return True
+    else:
+       return False
+  
+  @staticmethod
+  def eval_illustrations(bib: Bib) -> str:
+    return ""
+  
+  @staticmethod
+  def eval_index(bib: Bib) -> str:
+    try:
+      field_index = bib.get_data_field(TAG_FOR_INDEX).get_text()
+      if "Index" in field_index:
+        return True
+      else:
+        return False
+    except Exception:
+       return False # This is in case no 504 is present somehow
+  
+  @staticmethod
   def compare_008(bib: Bib) -> str:
      
-    df_008 = bib.get_control_field('008').get_text()
+    # df_008 = bib.get_control_field('008').get_text()
     # print("-" + df_008 + "-") # Useful for understanding the length and nuances of received 008s.
     # print(len(df_008)) # The 008s do not fill with whitespace so may be shorter it there are blanks at the start or end
-    return df_008
+
+    to_add = ""
+
+    Item = bib.extract_008()
+
+    # 8d of the final review handbook
+    if Item['Place_pub'] == 'xx ':
+       to_add += "Missing Place of Publication"
+
+    # 8e of the final review handbook
+    # Illustration check here
+
+    # 8f of the final review handbook
+    # Nature of Contents check here
+
+    # 8g of the final review handbook
+    if Item['Index'] == "1":
+       if not Triage.eval_index:
+          to_add += "Missing index"
+
+    return to_add
       
     
   
@@ -274,5 +320,5 @@ columns_to_eval_funcs = {
   'Format_Assessment': Triage.eval_format,
   'Coding_Problems': Triage.eval_coding,
   'OCLC_Number' : Triage.eval_OCLC,
-  'OO8' : Triage.compare_008
+  'OO8_Discrepancies' : Triage.compare_008
 }
