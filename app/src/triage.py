@@ -274,5 +274,5 @@ columns_to_eval_funcs = {
   'Format_Assessment': Triage.eval_format,
   'Coding_Problems': Triage.eval_coding,
   'OCLC_Number' : Triage.eval_OCLC,
-  '008' : Triage.compare_008
+  'OO8' : Triage.compare_008
 }

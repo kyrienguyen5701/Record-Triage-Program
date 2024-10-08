@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections import deque
 import xmltodict
 from almapipy import AlmaCnxn
 from dotenv import load_dotenv
@@ -15,6 +16,37 @@ FORMAT = 'json'
 alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
 TAG_FOR_OCLC_NUMBER = '035'
+
+
+# Lays out the format in which the 008 is received. The numbers correspont to the number of characters in the string that represent that field
+# The order must be maintained in this way
+FORMAT_008 = {
+  "Date_file" : 6,
+  "Pub_type" : 1,
+  "Date_1" : 4,
+  "Date_2" : 4,
+  "Place_pub" : 3,
+  "Ill_1" : 1,
+  "Ill_2" : 1,
+  "Ill_3" : 1,
+  "Ill_4" : 1,
+  "Target_aud" : 1,
+  "Form" : 1,
+  "Nature_1" : 1,
+  "Nature_2" : 1,
+  "Nature_3" : 1,
+  "Nature_4" : 1,
+  "Gov_pub" : 1,
+  "Conf_pub": 1,
+  "Festschrift": 1,
+  "Index" : 1,
+  "Undef" : 1,
+  "Literary_form" : 1,
+  "Bib" : 1,
+  "Lang" : 3,
+  "Modified_rec" : 1,
+  "Cat_source" : 1
+}
 
 class Field:
   
@@ -272,12 +304,12 @@ class Bib:
     try:
       for control_field in self.control_field:
         if control_field['@tag'] == tag:
-          df_obj = DataField(self.bib['mms_id'], control_field)
+          df_obj = ControlField(self.bib['mms_id'], control_field)
           return df_obj
     except Exception as e:
       bib_logger.critical(f'Something wrong with control field {tag}{code} of {self.bib["mms_id"]}.')
       bib_logger.error(traceback.format_exc())
-      return DataField(self.bib['mms_id'])
+      return ControlField(self.bib['mms_id'])
 
   
   def data_field_exists_more_than_once(self, tag: str) -> bool:
@@ -303,3 +335,22 @@ class Bib:
       bib_logger.critical(f'Something wrong with data field {tag} of {self.bib["mms_id"]}.')
       bib_logger.error(traceback.format_exc())
       return False
+  
+  # Try to make sense of the string 008 recieved from the alma bib
+  # Will need changing if alma decides to add more to the 008 field
+  def extract_008(self):
+
+    str_008 = deque(self.get_control_field('008').get_text())
+    Item = {}
+
+    for key in FORMAT_008.keys():
+      print(str_008)
+      temp = ""
+      for chars in range (0, FORMAT_008[key]):
+        try:
+          temp += str_008.popleft()
+        except Exception:
+          temp = ""
+      Item[key] = temp # This creates a dictionary of the 008 entries. Needs appending to a dataframe
+
+
