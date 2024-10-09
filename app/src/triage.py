@@ -259,22 +259,13 @@ class Triage:
      return to_add
   
   @staticmethod
-  def eval_index(bib: Bib) -> str:
-    field_index = bib.get_data_field(TAG_FOR_INDEX).get_text()
-    if "Index" in field_index:
-       return True
-    else:
-       return False
-  
-  @staticmethod
   def eval_illustrations(bib: Bib) -> str:
     return ""
   
   @staticmethod
-  def eval_index(bib: Bib) -> str:
+  def eval_index(bib: Bib) -> bool:
     try:
-      field_index = bib.get_data_field(TAG_FOR_INDEX).get_text()
-      if "Index" in field_index:
+      if "index" in bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower():
         return True
       else:
         return False
@@ -304,7 +295,7 @@ class Triage:
 
     # 8g of the final review handbook
     if Item['Index'] == "1":
-       if not Triage.eval_index:
+       if not Triage.eval_index(bib):
           to_add += "Missing index"
 
     return to_add
