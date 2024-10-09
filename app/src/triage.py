@@ -295,7 +295,7 @@ class Triage:
       if "index" in nature:
         Nature_dict["index"] = True
       if "bibliograph" in nature:
-          Nature_dict['bibliography'] = True
+          Nature_dict["bibliography"] = True
     except Exception:
       pass
 
@@ -327,14 +327,24 @@ class Triage:
     # 8e of the final review handbook
     Illustration_codes = Triage.eval_illustrations(bib) # An array of illustration codes (a, b or f) for comparison with 008
 
-    # 8f of the final review handbook
-    # Nature of Contents check here
-
-    # 8g of the final review handbook
+    # 8f & 8g of the final review handbook
     nature_dict = Triage.eval_nature(bib)
 
-    print(nature_dict)
-    print("008 nature fields: " + Item['Nature'] + "008 index: " + Item['Index'])
+    bibliography_in_008 = False
+    if "b" in Item['Nature']:
+       bibliography_in_008 = True
+    
+    index_in_008 = False
+    if Item['Index'] == "1":
+       index_in_008 = True
+
+    if bibliography_in_008 != nature_dict["bibliography"]:
+       to_add += "Bibliography mismatch"
+       print("bib error")
+
+    if index_in_008 != nature_dict["index"]:
+       to_add += "Index mismatch"
+       print("index error")
 
     return to_add
       
