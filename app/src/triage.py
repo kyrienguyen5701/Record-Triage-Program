@@ -259,8 +259,20 @@ class Triage:
      return to_add
   
   @staticmethod
-  def eval_illustrations(bib: Bib) -> str:
-    return ""
+  def eval_illustrations(bib: Bib) -> list[str]:
+    Illustration_codes = {
+       "illustrations" : "a",
+       "maps" : "b",
+       "plates" : "f"
+    }
+    present_codes = []
+
+    field = bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower()
+    for key in Illustration_codes.keys():
+       if key in field:
+          present_codes.append(Illustration_codes[key])
+
+    return present_codes
   
   @staticmethod
   def eval_index(bib: Bib) -> bool:
@@ -288,7 +300,10 @@ class Triage:
        to_add += "Missing Place of Publication"
 
     # 8e of the final review handbook
-    # Illustration check here
+    Illustration_codes = Triage.eval_illustrations(bib)
+    for code in Item['Illustrations']:
+       if code not in Illustration_codes:
+          to_add += "Illustration"
 
     # 8f of the final review handbook
     # Nature of Contents check here
