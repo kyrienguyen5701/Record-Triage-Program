@@ -267,11 +267,14 @@ class Triage:
     }
     present_codes = []
 
-    field = bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower()
+    try:
+      field = bib.get_data_field(TAG_FOR_ILLUSTRATIONS,'b').get_text().lower()
+    except Exception:
+      return []
+    
     for key in Illustration_codes.keys():
-       if key in field:
-          present_codes.append(Illustration_codes[key])
-
+      if key in field:
+        present_codes.append(Illustration_codes[key])
     return present_codes
   
   @staticmethod
@@ -300,10 +303,13 @@ class Triage:
        to_add += "Missing Place of Publication"
 
     # 8e of the final review handbook
-    Illustration_codes = Triage.eval_illustrations(bib)
-    for code in Item['Illustrations']:
-       if code not in Illustration_codes:
-          to_add += "Illustration"
+    Illustration_codes = Triage.eval_illustrations(bib) # An array of illustration codes (a, b or f) for comparison with 008
+
+    print("From 008: " + Item['Illustrations'])
+    print("From record: " , Illustration_codes)
+    #for code in Item['Illustrations']:
+       #if code not in Illustration_codes and code not in ['a','b','f']:
+          #to_add += "Illustration"
 
     # 8f of the final review handbook
     # Nature of Contents check here
