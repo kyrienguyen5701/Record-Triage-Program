@@ -1,5 +1,5 @@
 from __future__ import annotations
-from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER, TAG_FOR_ILLUSTRATIONS, TAG_FOR_INDEX, TAG_FOR_LANG
+from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER, TAG_FOR_ILLUSTRATIONS, TAG_FOR_NATURE, TAG_FOR_INDEX
 import rule
 
 OVERSIZE_ff_HEIGHT_MIN = 45
@@ -278,14 +278,36 @@ class Triage:
     return present_codes
   
   @staticmethod
-  def eval_index(bib: Bib) -> bool:
-    try:
-      if "index" in bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower():
-        return True
-      else:
-        return False
+  def eval_nature(bib: Bib) -> dict[bool]:
+    """
+    Returns a dictionary with index and bibliography
+    Nature[index] is True if 'index' is present in the 504 or 500 fields
+    Nature[bibliography] is True is 'bibliograph' is present in 504 field
+    """
+
+    Nature_dict = {
+       "index" : False,
+       "bibliography" : False
+    }
+
+    try: # Trying to find the 504
+      nature = bib.get_data_field(TAG_FOR_NATURE,'a').get_text().lower()
+      if "index" in nature:
+        Nature_dict["index"] = True
+      if "bibliograph" in nature:
+          Nature_dict['bibliography'] = True
     except Exception:
-       return False # This is in case no 504 is present somehow
+      pass
+
+    try: # Trying to find the 500
+      index = bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower()
+      if "index" in index:
+         Nature_dict["index"] = True
+    except Exception:
+      return Nature_dict
+      
+    return Nature_dict
+      
   
   @staticmethod
   def compare_008(bib: Bib) -> str:
@@ -305,19 +327,14 @@ class Triage:
     # 8e of the final review handbook
     Illustration_codes = Triage.eval_illustrations(bib) # An array of illustration codes (a, b or f) for comparison with 008
 
-    print("From 008: " + Item['Illustrations'])
-    print("From record: " , Illustration_codes)
-    #for code in Item['Illustrations']:
-       #if code not in Illustration_codes and code not in ['a','b','f']:
-          #to_add += "Illustration"
-
     # 8f of the final review handbook
     # Nature of Contents check here
 
     # 8g of the final review handbook
-    if Item['Index'] == "1":
-       if not Triage.eval_index(bib):
-          to_add += "Missing index"
+    nature_dict = Triage.eval_nature(bib)
+
+    print(nature_dict)
+    print("008 nature fields: " + Item['Nature'] + "008 index: " + Item['Index'])
 
     return to_add
       
