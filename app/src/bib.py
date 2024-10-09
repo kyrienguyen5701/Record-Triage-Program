@@ -17,9 +17,8 @@ alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
 TAG_FOR_OCLC_NUMBER = '035'
 TAG_FOR_ILLUSTRATIONS = '300'
-TAG_FOR_INDEX = '504'
-TAG_FOR_LANG = '040'
-
+TAG_FOR_INDEX = '500'
+TAG_FOR_NATURE = '504'
 
 # Lays out the format in which the 008 is received. The numbers correspont to the number of characters in the string that represent that field
 # The order must be maintained in this way
