@@ -110,7 +110,6 @@ Project structure:
 ```
 
 Oct 4, 2024
-
 James Gaskell
 Added an evaluation of the 008 field to ensure it matches the main record which should help shorten final review. The 008 field does not have indicators or subfield codes, instead it is an *UP TO* 40 character string where the position of each character indicates the element it belongs to.
 
