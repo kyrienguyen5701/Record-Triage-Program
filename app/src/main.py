@@ -113,6 +113,6 @@ if __name__ == '__main__':
       batch_df[col] = vectorized_func(bib_series)
     output_df = pd.concat([output_df, batch_df])
     save_df(output_df, output_path)
-    
+  print("Finalizing ...")
   expand_columns.expand_columns(os.path.join(ROOT, args['output_file']))
   
