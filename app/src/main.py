@@ -3,8 +3,8 @@ import numpy as np
 from argparse import ArgumentParser
 from bib import Bib
 from triage import columns_to_eval_funcs
-import os
-import warnings
+from tkinter import messagebox
+import os, sys, warnings
 from config import *
 
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
@@ -14,6 +14,9 @@ READ_ENGINES = {
   'xlsx': pd.read_excel,
   'xls': pd.read_excel
 }
+
+def safe_sys_exit():
+  sys.exit()
 
 def fill_ext(filename):
   '''
@@ -33,13 +36,19 @@ def create_df(filename):
   print('Finish reading\n')
   return df
 
+
 def save_df(df, filename):
   ext = extract_ext(filename)
   print('Writing output ...')
   if ext == 'csv':
     df.to_csv(filename, index=False)
   if ext in ('xlsx', 'xls'):
-    df.to_excel(filename, index=False)
+    try:
+      df.to_excel(filename, index=False)
+    except Exception:
+      messagebox.showwarning(title="File Warning", message="The output file is open, please close it and try again")
+      safe_sys_exit()
+
   print('Finish writing')
 
 def extract_ext(filename):
@@ -57,6 +66,7 @@ parser.add_argument('-of', '--output_file', default=DEFAULT_OUTPUT_FILE, type=st
 args = vars(parser.parse_args())
 
 if __name__ == '__main__':
+
   input_path = os.path.join(ROOT, args['input_file'])
   input_df = create_df(input_path)
   input_df.columns = [col.lower().rstrip() for col in input_df.columns]
