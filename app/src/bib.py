@@ -334,7 +334,7 @@ class Bib:
   
   # Try to make sense of the string 008 recieved from the alma bib
   # Will need changing if alma decides to add more to the 008 field
-  def extract_008(self):
+  def extract_008(self, type):
 
     str_008 = deque(self.get_control_field('008').get_text())
     Item = {}
@@ -349,6 +349,6 @@ class Bib:
           temp = ""
       Item[key] = temp # This creates a dictionary of the 008 entries. Needs appending to a dataframe
 
-    return Item
+    return Item[type] # returns the 008 field for the key passed into the function
 
 
