@@ -92,13 +92,19 @@ if __name__ == '__main__':
     print(f'Processing mmsID from {start_id} to {end_id} ...')
     batch_df = pd.DataFrame({
       'MMS ID': input_df[mmsid_col][start_id:end_id],
+      'OCLC#' : np.full((df_size,), np.nan),
+      'Floor_Status': np.full((df_size,), np.nan),
+      'Size_Status': np.full((df_size,), np.nan),
+      'Format_Assessment': np.full((df_size,), np.nan),
+      'Call_Number_Assessment' : np.full((df_size,), np.nan),
       'Title': input_df['title'][start_id:end_id],
       'Brief_Level': 2 * np.ones((df_size,)),
       'Overall_Condition': np.full((df_size,), np.nan),
       'Call_Assessment': np.full((df_size,), np.nan),
-      'Floor_Status': np.full((df_size,), np.nan),
-      'Size_Status': np.full((df_size,), np.nan),
-      'Format_Assessment': np.full((df_size,), np.nan),
+      'Illustration_Status': np.full((df_size,), np.nan),
+      'Bibliography_Status': np.full((df_size,), np.nan),
+      'Index_Status': np.full((df_size,), np.nan),
+      'Publication_Status': np.full((df_size,), np.nan),
       'Coding_Problems': np.full((df_size,), np.nan)
     })
     bib_series = input_df[mmsid_col][start_id:end_id].apply(lambda mmsID: Bib(mmsID))
