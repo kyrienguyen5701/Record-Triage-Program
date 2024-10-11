@@ -307,57 +307,68 @@ class Triage:
       return Nature_dict
       
     return Nature_dict
-      
   
   @staticmethod
-  def compare_008(bib: Bib) -> str:
-     
-    # df_008 = bib.get_control_field('008').get_text()
-    # print("-" + df_008 + "-") # Useful for understanding the length and nuances of received 008s.
-    # print(len(df_008)) # The 008s do not fill with whitespace so may be shorter it there are blanks at the start or end
+  def compare_illustrations(bib: Bib) -> str:
+     ill_008 = bib.extract_008("Illustrations")
+     return "Under Construction"
+  
+  @staticmethod
+  def compare_bibliography(bib: Bib) -> str:
 
     to_add = ""
-
-    Item = bib.extract_008()
-
-    # 8d of the final review handbook
-    if Item['Place_pub'] == 'xx ':
-       to_add += "Missing Place of Publication"
-
-    # 8e of the final review handbook
-    Illustration_codes = Triage.eval_illustrations(bib) # An array of illustration codes (a, b or f) for comparison with 008
-
-    # 8f & 8g of the final review handbook
+     
     nature_dict = Triage.eval_nature(bib)
 
+    bib_008 = bib.extract_008("Nature")
+
     bibliography_in_008 = False
-    if "b" in Item['Nature']:
+
+    if "b" in bib_008:
        bibliography_in_008 = True
-    
-    index_in_008 = False
-    if Item['Index'] == "1":
-       index_in_008 = True
 
-    if bibliography_in_008 != nature_dict["bibliography"]:
-       to_add += "Bibliography mismatch"
-       print("bib error")
-
-    if index_in_008 != nature_dict["index"]:
-       to_add += "Index mismatch"
-       print("index error")
+    if bibliography_in_008 != nature_dict["bibliography"]: # Checks for True True, False False
+      to_add += "Bibliography mismatch"
 
     return to_add
-      
-    
   
+  @staticmethod
+  def compare_index(bib: Bib) -> str:
+    
+    to_add = ""
+     
+    nature_dict = Triage.eval_nature(bib)
+  
+    index_008 = bib.extract_008("Index")
+
+    index_in_008 = False
+    if index_008 == "1":
+      index_in_008 = True
+
+    if index_in_008 != nature_dict["index"]: # Checks for True True, False False
+      to_add += "Index mismatch"
+
+    return to_add
+  
+  @staticmethod
+  def eval_publication(bib: Bib) -> str:
+     if bib.extract_008("Place_pub") == 'xx ':
+        return "Missing Place of Publication"
+     else:
+        return "" 
+
+
 columns_to_eval_funcs = {
-  'Brief_Level': Triage.compute_brief_level,
-  'Overall_Condition': Triage.eval_brief_level,
-  'Call_Number_Assessment': Triage.eval_call_number,
+  'OCLC#' : Triage.eval_OCLC,
   'Floor_Status': Triage.eval_location,
   'Size_Status': Triage.eval_size,
   'Format_Assessment': Triage.eval_format,
+  'Call_Number_Assessment': Triage.eval_call_number,
+  'Brief_Level': Triage.compute_brief_level,
+  'Overall_Condition': Triage.eval_brief_level,
+  'Illustration_Status' : Triage.compare_illustrations,
+  'Bibliography_Status' : Triage.compare_bibliography,
+  'Index_Status' : Triage.compare_index,
+  'Publication_Status' : Triage.eval_publication,
   'Coding_Problems': Triage.eval_coding,
-  'OCLC_Number' : Triage.eval_OCLC,
-  'OO8_Discrepancies' : Triage.compare_008
 }
