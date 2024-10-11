@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from bib import Bib
 from triage import columns_to_eval_funcs
 from tkinter import messagebox
-import os, sys, warnings
+import os, sys, warnings, expand_columns
 from config import *
 
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
@@ -113,4 +113,6 @@ if __name__ == '__main__':
       batch_df[col] = vectorized_func(bib_series)
     output_df = pd.concat([output_df, batch_df])
     save_df(output_df, output_path)
+    
+  expand_columns.expand_columns(os.path.join(ROOT, args['output_file']))
   
