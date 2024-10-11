@@ -259,25 +259,6 @@ class Triage:
      return to_add
   
   @staticmethod
-  def eval_illustrations(bib: Bib) -> list[str]:
-    Illustration_codes = {
-       "illustrations" : "a",
-       "maps" : "b",
-       "plates" : "f"
-    }
-    present_codes = []
-
-    try:
-      field = bib.get_data_field(TAG_FOR_ILLUSTRATIONS,'b').get_text().lower()
-    except Exception:
-      return []
-    
-    for key in Illustration_codes.keys():
-      if key in field:
-        present_codes.append(Illustration_codes[key])
-    return present_codes
-  
-  @staticmethod
   def eval_nature(bib: Bib) -> dict[bool]:
     """
     Returns a dictionary with index and bibliography
@@ -310,8 +291,16 @@ class Triage:
   
   @staticmethod
   def compare_illustrations(bib: Bib) -> str:
-     ill_008 = bib.extract_008("Illustrations")
-     return "Under Construction"
+    ill_008 = bib.extract_008("Illustrations")
+    try:
+      illustrations = bib.get_data_field(TAG_FOR_ILLUSTRATIONS, 'b').get_text().lower()
+    except Exception:
+      illustrations = ""
+
+
+    print("008: " + ill_008 + " ALMA: " + illustrations)
+
+    return "Under Construction"
   
   @staticmethod
   def compare_bibliography(bib: Bib) -> str:
