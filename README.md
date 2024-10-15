@@ -128,8 +128,47 @@ Project structure:
 Oct 4, 2024 
 James Gaskell
 
-Add an evaluation of the 008 field to ensure it matches the main record which should help shorten final review. The 008 field does not have indicators or subfield codes, instead it is an *UP TO* 40 character string where the position of each character indicates the element it belongs to.
+Added an evaluation for the OCLC number which is now output to the Triage spreadsheet
 
-This element of the program will require maintenance should Alma decide to change the order or elements in the 008. A current explanation of the characters' significance can be found [here](https://www.loc.gov/marc/bibliographic/bd008a.html)
+Added an evaluation of the 008 field to ensure it matches the main record which should help shorten final review. The 008 field does not have indicators or subfield codes, instead it is an *UP TO* 40 character string where the position of each character indicates the element it belongs to. This element of the program will require maintenance should Alma decide to change the order or elements in the 008. A current explanation of the characters' significance can be found [here](https://www.loc.gov/marc/bibliographic/bd008a.html)
 
+Added an operating system evaluation that changes the filepath to be in the correct format for windows and MacOS (windows uses // Mac uses \ to separate directories). The project can now be run on Mac
+
+Oct 15, 2024 
+James Gaskell
+
+Added a comparison of data fields and the 008 field for Illustrations, Bibliogaphies, Indexes and Publication Locations. Added any issues found with the records to the output file under new headers.
+
+Updated the order of the output file and added expand_columns.py to change the column widths of the spreadsheet upon output, thus saving the user time for every Triage spreadsheet produced.
+
+Added an inputs folder to the project to make it clearer and easier when testing using the default configuration.
+
+Project structure:
+
+```bash
+📦app
+ ┣ 📂inputs
+ ┣ 📂logs
+ ┣ 📂outputs
+ ┣ 📂src
+ ┃ ┣ 📜.env
+ ┃ ┣ 📜bib.py
+ ┃ ┣ 📜config.py
+ ┃ ┣ 📜debug.py
+ ┃ ┣ 📜expand_columns.py
+ ┃ ┣ 📜logger.py
+ ┃ ┣ 📜main.py
+ ┃ ┣ 📜rule.py
+ ┃ ┣ 📜test.py
+ ┃ ┗ 📜triage.py
+ ┣ 📜debug_interactive.cmd
+ ┗ 📜main.cmd <-- The main program 
+
+📦scripts
+ ┣ 📜install.cmd
+ ┣ 📜setup.cmd
+ ┗ 📜update.cmd
+
+📜requirements.txt
+```
 </details>
