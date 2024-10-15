@@ -291,24 +291,47 @@ class Triage:
   
   @staticmethod
   def compare_illustrations(bib: Bib) -> str:
+
+    ill_translate = { # allows translation between data field and 008 code
+       "a" : 'illustration',
+       "b" : 'map',
+       "f" : 'plate'
+    }
+
+    data_field_illustrations = { # pairs 008 code with wether it appears in the data field
+       "a" : False,
+       "b" : False,
+       "f" : False
+    }
+    
     ill_008 = bib.extract_008("Illustrations")
     try:
+      if "plates" in bib.get_data_field(TAG_FOR_ILLUSTRATIONS, 'a').get_text().lower():
+         data_field_illustrations["f"] = True
       illustrations = bib.get_data_field(TAG_FOR_ILLUSTRATIONS, 'b').get_text().lower()
     except Exception:
       illustrations = ""
 
+    for key in data_field_illustrations.keys(): # Checks the data field against the 008
+       if ill_translate[key] in illustrations:
+          data_field_illustrations[key] = True
+       if data_field_illustrations[key] == True and key not in ill_008:
+          return "Illustration mismatch"
+    
+    for char in ill_008.split(): # Checks the 008 against the data field
+      try:
+        if data_field_illustrations[char] == False:
+          return "Illustration mismatch"
+      except Exception: # If there is any value that isnt an a, b or f in 008
+          pass
 
-    print("008: " + ill_008 + " ALMA: " + illustrations)
-
-    return "Under Construction"
+    return ""
   
   @staticmethod
   def compare_bibliography(bib: Bib) -> str:
 
     to_add = ""
-     
     nature_dict = Triage.eval_nature(bib)
-
     bib_008 = bib.extract_008("Nature")
 
     bibliography_in_008 = False
@@ -325,9 +348,7 @@ class Triage:
   def compare_index(bib: Bib) -> str:
     
     to_add = ""
-     
     nature_dict = Triage.eval_nature(bib)
-  
     index_008 = bib.extract_008("Index")
 
     index_in_008 = False
