@@ -1,3 +1,8 @@
+<details>
+<summary><b><u><font size="+5">V1.0 05/22 - 05/23</font></u></b></summary>
+
+<br>
+
 June 7, 2022
 Lilah Kelly
 
@@ -109,8 +114,17 @@ Project structure:
 📜requirements.txt
 ```
 
+</details>
+
+<details>
+<summary><b><u><font size="+5">V2.0 10/24 - Present</font></u></b></summary>
+
+<br>
+
 Oct 4, 2024
 James Gaskell
 Add an evaluation of the 008 field to ensure it matches the main record which should help shorten final review. The 008 field does not have indicators or subfield codes, instead it is an *UP TO* 40 character string where the position of each character indicates the element it belongs to.
 
 This element of the program will require maintenance should Alma decide to change the order or elements in the 008. A current explanation of the characters' significance can be found [here](https://www.loc.gov/marc/bibliographic/bd008a.html)
+
+</details>
