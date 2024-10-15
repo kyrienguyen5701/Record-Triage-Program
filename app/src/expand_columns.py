@@ -1,5 +1,4 @@
 import openpyxl
-from string import ascii_uppercase
 
 def expand_columns(filepath):
 
