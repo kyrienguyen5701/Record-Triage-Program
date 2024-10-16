@@ -363,7 +363,7 @@ class Triage:
   @staticmethod
   def eval_publication(bib: Bib) -> str:
      if bib.extract_008("Place_pub") == 'xx ':
-        return "Missing Place of Publication"
+        return "Missing"
      else:
         return "" 
 
@@ -379,6 +379,6 @@ columns_to_eval_funcs = {
   'Illustration_Status' : Triage.compare_illustrations,
   'Bibliography_Status' : Triage.compare_bibliography,
   'Index_Status' : Triage.compare_index,
-  'Publication_Status' : Triage.eval_publication,
+  'Pub_Locn' : Triage.eval_publication,
   'Coding_Problems': Triage.eval_coding,
 }
