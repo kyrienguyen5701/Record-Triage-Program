@@ -100,11 +100,10 @@ if __name__ == '__main__':
       'Title': input_df['title'][start_id:end_id],
       'Brief_Level': 2 * np.ones((df_size,)),
       'Overall_Condition': np.full((df_size,), np.nan),
-      'Call_Assessment': np.full((df_size,), np.nan),
       'Illustration_Status': np.full((df_size,), np.nan),
       'Bibliography_Status': np.full((df_size,), np.nan),
       'Index_Status': np.full((df_size,), np.nan),
-      'Publication_Status': np.full((df_size,), np.nan),
+      'Pub_Locn': np.full((df_size,), np.nan),
       'Coding_Problems': np.full((df_size,), np.nan)
     })
     bib_series = input_df[mmsid_col][start_id:end_id].apply(lambda mmsID: Bib(mmsID))
@@ -114,5 +113,5 @@ if __name__ == '__main__':
     output_df = pd.concat([output_df, batch_df])
     save_df(output_df, output_path)
   print("Finalizing ...")
-  expand_columns.expand_columns(os.path.join(ROOT, args['output_file']))
+  expand_columns.expand_columns(os.path.join(ROOT, (args['output_file'] + '.xlsx')))
   
