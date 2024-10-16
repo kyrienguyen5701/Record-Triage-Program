@@ -176,6 +176,9 @@ class Triage:
   
   @staticmethod
   def is_call_number_complete(bib: Bib) -> bool:
+    """
+    Returns True if the call number is complete else False
+    """
     return bool(bib.get_data_field(TAG_FOR_CALL_NUMBER) != None and \
       bib.get_data_field(TAG_FOR_CALL_NUMBER, 'a') and \
       bib.get_data_field(TAG_FOR_CALL_NUMBER, 'b'))
@@ -291,7 +294,12 @@ class Triage:
   
   @staticmethod
   def compare_illustrations(bib: Bib) -> str:
-
+    """
+    Returns a string to be outputted to the spreadsheet if there are any issues with the illustration fields
+    Illustration data is kept in both data field 300 as plain text, and the 008 control field as encoded characters
+    These fields are compared, any mismatches are reported on the output spreadsheet
+    to_add = "Illustration mismatch" to highlight any problems
+    """
     ill_translate = { # allows translation between data field and 008 code
        "a" : 'illustration',
        "b" : 'map',
@@ -329,7 +337,11 @@ class Triage:
   
   @staticmethod
   def compare_bibliography(bib: Bib) -> str:
-
+    """
+    First evaluates the nature field (504) to check if 'bibliograph' is in the plain text
+    Compares this with the 008 field which should contain "b" if bibliographies present
+    to_add = "Bibliography mismatch" if the fields don't match and is reported on the spreadsheet
+    """
     to_add = ""
     nature_dict = Triage.eval_nature(bib)
     bib_008 = bib.extract_008("Nature")
@@ -346,7 +358,11 @@ class Triage:
   
   @staticmethod
   def compare_index(bib: Bib) -> str:
-    
+    """
+    First evaluates the nature field (504) & index field (500) to check if 'index' is in the plain text
+    Compares this with the 008 field which should contain "1" if index present
+    to_add = "Index mismatch" if the fields don't match and is reported on the spreadsheet
+    """
     to_add = ""
     nature_dict = Triage.eval_nature(bib)
     index_008 = bib.extract_008("Index")
@@ -362,13 +378,17 @@ class Triage:
   
   @staticmethod
   def eval_publication(bib: Bib) -> str:
+     """
+     The only unacceptable value in the 008 is xx
+     Missing is returned and outputted to the spreadsheet if this code is present
+     """
      if bib.extract_008("Place_pub") == 'xx ':
         return "Missing"
      else:
         return "" 
 
 
-columns_to_eval_funcs = {
+columns_to_eval_funcs = { # Output columns that require evaluation by the program and cannot just be stripped from the input spreadsheet
   'OCLC#' : Triage.eval_OCLC,
   'Floor_Status': Triage.eval_location,
   'Size_Status': Triage.eval_size,

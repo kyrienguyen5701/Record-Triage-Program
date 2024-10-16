@@ -24,6 +24,11 @@ def expand_columns(filepath):
         }
 
     for column in column_widths.keys():
+        """
+        Systematically expands the columns on an existing excel file
+        Uses the dictionary column_widths to determine the amount to expand them by correspoding to the field
+        Widths are pre-set in column_widths
+        """
         worksheet.column_dimensions[column].width = column_widths[column]
 
     wb.save(filepath)

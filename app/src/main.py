@@ -16,6 +16,10 @@ READ_ENGINES = {
 }
 
 def safe_sys_exit():
+  '''
+  Used in the rare case the output excel file is open
+  i.e. the user is attempting to override a file they have already run the program on and it is open
+  '''
   sys.exit()
 
 def fill_ext(filename):

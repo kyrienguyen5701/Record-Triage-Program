@@ -335,7 +335,16 @@ class Bib:
   # Try to make sense of the string 008 recieved from the alma bib
   # Will need changing if alma decides to add more to the 008 field
   def extract_008(self, type):
+    """
+    Returns the character encoded 008 for the requested field
 
+    Params:
+        type (str): the field we are looking in the 008 for. Determined from the dictionary keys FORMAT_008
+
+    Returns:
+        str: the variable length 008 associated with that field
+
+    """
     str_008 = deque(self.get_control_field('008').get_text())
     Item = {}
 
