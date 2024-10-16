@@ -6,5 +6,5 @@ if "%OutputFilePath%" == "" set "OutputFilePath=%InputFilePath:~0,-5%_triaged.xl
 echo Input file: %InputFilePath%
 echo Output file: %OutputFilePath%
 py src\main.py -if %InputFilePath% -of %OutputFilePath%
-move %OutputFilePath% outputs
+REM move %OutputFilePath% outputs
 pause
