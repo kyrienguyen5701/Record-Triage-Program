@@ -150,13 +150,15 @@ Cleaned up the Triage spreadsheet by removing any columns that were not necessar
 
 Changed main.cmd to output the triage spreadsheet into the outputs folder contained within the project
 
+Note: to test the project using default files, the coder should manually create an inputs folder which will be ignored by github. default configuration assumes input files are within this folder but it is not needed for the program to run
+
 <br>
 
 Project structure:
 
 ```bash
 📦app
- ┣ 📂inputs
+ ┣ 📂inputs (only for debugging)
  ┣ 📂logs
  ┣ 📂outputs
  ┣ 📂src
