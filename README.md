@@ -158,7 +158,7 @@ Project structure:
 
 ```bash
 📦app
- ┣ 📂inputs (only for debugging)
+ ┣ 📂inputs (only to debug)
  ┣ 📂logs
  ┣ 📂outputs
  ┣ 📂src
