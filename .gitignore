@@ -132,11 +132,11 @@ dmypy.json
 .pyre/
 
 # input files
-# *.xlsx
+*.xlsx
 
 # logging and debug files
-# logs
-# outputs
+logs
+outputs
 
 # virtual environment
 venv
