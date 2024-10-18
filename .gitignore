@@ -138,6 +138,9 @@ dmypy.json
 logs
 outputs
 
+# test input files
+inputs
+
 # virtual environment
 venv
 
