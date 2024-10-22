@@ -1,3 +1,12 @@
+# Record Triage Program
+
+Below are the details for V1.0 and V2.0 of the Record Triage Program. Most of the design decisions remain the same so the first section is still highly relevant, but V2.0 has a different structure and introduces new functionality which is explained here.
+
+<details>
+<summary><b><u><font size="+5">V1.0 05/22 - 05/23</font></u></b></summary>
+
+<br>
+
 June 7, 2022
 Lilah Kelly
 
@@ -108,3 +117,69 @@ Project structure:
 
 📜requirements.txt
 ```
+
+</details>
+
+<details>
+<summary><b><u><font size="+5">V2.0 10/24 - Present</font></u></b></summary>
+
+<br>
+
+Oct 4, 2024 
+James Gaskell
+
+Added an evaluation for the OCLC number which is now output to the Triage spreadsheet
+
+Added an evaluation of the 008 field to ensure it matches the main record which should help shorten final review. The 008 field does not have indicators or subfield codes, instead it is an *UP TO* 40 character string where the position of each character indicates the element it belongs to. This element of the program will require maintenance should Alma decide to change the order or elements in the 008. A current explanation of the characters' significance can be found [here](https://www.loc.gov/marc/bibliographic/bd008a.html)
+
+Added an operating system evaluation that changes the filepath to be in the correct format for windows and MacOS (windows uses // Mac uses \ to separate directories). The project can now be run on Mac. Caveat - the project can only be run on Mac through main.py not main.cmd (meaning the config file must be changed) since this is written for windows. A future developer may add a Mac batch file to run the program from terminal
+
+Oct 15, 2024 
+James Gaskell
+
+Added a comparison of data fields and the 008 field for Illustrations, Bibliogaphies, Indexes and Publication Locations. Added any issues found with the records to the output file under new headers.
+
+Updated the order of the output file and added expand_columns.py to change the column widths of the spreadsheet upon output, thus saving the user time for every Triage spreadsheet produced.
+
+Added an inputs folder to the project to make it clearer and easier when testing using the default configuration.
+
+Oct 18, 2024 
+James Gaskell
+
+Cleaned up the Triage spreadsheet by removing any columns that were not necessary for evaluation
+
+Changed main.cmd to output the triage spreadsheet into the outputs folder contained within the project
+
+Note: to test the project using default files, the coder should manually create an inputs folder which will be ignored by github. default configuration assumes input files are within this folder but it is not needed for the program to run
+
+<br>
+
+Project structure:
+
+```bash
+📦app
+ ┣ 📂inputs (only to debug)
+ ┣ 📂logs
+ ┣ 📂outputs
+ ┣ 📂src
+ ┃ ┣ 📜.env
+ ┃ ┣ 📜bib.py
+ ┃ ┣ 📜config.py
+ ┃ ┣ 📜debug.py
+ ┃ ┣ 📜expand_columns.py
+ ┃ ┣ 📜logger.py
+ ┃ ┣ 📜main.py
+ ┃ ┣ 📜rule.py
+ ┃ ┣ 📜test.py
+ ┃ ┗ 📜triage.py
+ ┣ 📜debug_interactive.cmd
+ ┗ 📜main.cmd <-- The main program 
+
+📦scripts
+ ┣ 📜install.cmd
+ ┣ 📜setup.cmd
+ ┗ 📜update.cmd
+
+📜requirements.txt
+```
+</details>

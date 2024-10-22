@@ -1,5 +1,5 @@
 from __future__ import annotations
-from bib import Bib, TAG_FOR_CALL_NUMBER
+from bib import Bib, TAG_FOR_CALL_NUMBER, TAG_FOR_OCLC_NUMBER, TAG_FOR_ILLUSTRATIONS, TAG_FOR_NATURE, TAG_FOR_INDEX
 import rule
 
 OVERSIZE_ff_HEIGHT_MIN = 45
@@ -176,6 +176,9 @@ class Triage:
   
   @staticmethod
   def is_call_number_complete(bib: Bib) -> bool:
+    """
+    Returns True if the call number is complete else False
+    """
     return bool(bib.get_data_field(TAG_FOR_CALL_NUMBER) != None and \
       bib.get_data_field(TAG_FOR_CALL_NUMBER, 'a') and \
       bib.get_data_field(TAG_FOR_CALL_NUMBER, 'b'))
@@ -239,12 +242,163 @@ class Triage:
       return to_add
     return ''
   
-columns_to_eval_funcs = {
-  'Brief_Level': Triage.compute_brief_level,
-  'Overall_Condition': Triage.eval_brief_level,
-  'Call_Number_Assessment': Triage.eval_call_number,
+
+  # Start of the OCLC number evaluation
+  @staticmethod
+  def eval_OCLC(bib: Bib) -> str:
+     
+     df_035 = bib.get_data_field(TAG_FOR_OCLC_NUMBER, 'a').get_text()
+     try:
+      OCLC = df_035.split(')')[1] # OCLC number is returned as (OCoLC)#########. This takes care of that formatting. May want to look for multiple 035 entries?
+      if df_035 == None:
+          to_add = "Missing OCLC Number"
+      elif OCLC.isnumeric():
+          to_add = OCLC
+      else:
+          to_add = "OCLC not readable"
+     except Exception:
+        to_add = "OCLC not readable"
+
+     return to_add
+  
+  @staticmethod
+  def eval_nature(bib: Bib) -> dict[bool]:
+    """
+    Returns a dictionary with index and bibliography
+    Nature[index] is True if 'index' is present in the 504 or 500 fields
+    Nature[bibliography] is True is 'bibliograph' is present in 504 field
+    """
+
+    Nature_dict = {
+       "index" : False,
+       "bibliography" : False
+    }
+
+    try: # Trying to find the 504
+      nature = bib.get_data_field(TAG_FOR_NATURE,'a').get_text().lower()
+      if "index" in nature:
+        Nature_dict["index"] = True
+      if "bibliograph" in nature:
+          Nature_dict["bibliography"] = True
+    except Exception:
+      pass
+
+    try: # Trying to find the 500
+      index = bib.get_data_field(TAG_FOR_INDEX,'a').get_text().lower()
+      if "index" in index:
+         Nature_dict["index"] = True
+    except Exception:
+      return Nature_dict
+      
+    return Nature_dict
+  
+  @staticmethod
+  def compare_illustrations(bib: Bib) -> str:
+    """
+    Returns a string to be outputted to the spreadsheet if there are any issues with the illustration fields
+    Illustration data is kept in both data field 300 as plain text, and the 008 control field as encoded characters
+    These fields are compared, any mismatches are reported on the output spreadsheet
+    to_add = "Illustration mismatch" to highlight any problems
+    """
+    ill_translate = { # allows translation between data field and 008 code
+       "a" : 'illustration',
+       "b" : 'map',
+       "f" : 'plate'
+    }
+
+    data_field_illustrations = { # pairs 008 code with wether it appears in the data field
+       "a" : False,
+       "b" : False,
+       "f" : False
+    }
+    
+    ill_008 = bib.extract_008("Illustrations")
+    try:
+      if "plates" in bib.get_data_field(TAG_FOR_ILLUSTRATIONS, 'a').get_text().lower():
+         data_field_illustrations["f"] = True
+      illustrations = bib.get_data_field(TAG_FOR_ILLUSTRATIONS, 'b').get_text().lower()
+    except Exception:
+      illustrations = ""
+
+    for key in data_field_illustrations.keys(): # Checks the data field against the 008
+       if ill_translate[key] in illustrations:
+          data_field_illustrations[key] = True
+       if data_field_illustrations[key] == True and key not in ill_008:
+          return "Illustration mismatch"
+    
+    for char in ill_008.split(): # Checks the 008 against the data field
+      try:
+        if data_field_illustrations[char] == False:
+          return "Illustration mismatch"
+      except Exception: # If there is any value that isnt an a, b or f in 008
+          pass
+
+    return ""
+  
+  @staticmethod
+  def compare_bibliography(bib: Bib) -> str:
+    """
+    First evaluates the nature field (504) to check if 'bibliograph' is in the plain text
+    Compares this with the 008 field which should contain "b" if bibliographies present
+    to_add = "Bibliography mismatch" if the fields don't match and is reported on the spreadsheet
+    """
+    to_add = ""
+    nature_dict = Triage.eval_nature(bib)
+    bib_008 = bib.extract_008("Nature")
+
+    bibliography_in_008 = False
+
+    if "b" in bib_008:
+       bibliography_in_008 = True
+
+    if bibliography_in_008 != nature_dict["bibliography"]: # Checks for True True, False False
+      to_add += "Bibliography mismatch"
+
+    return to_add
+  
+  @staticmethod
+  def compare_index(bib: Bib) -> str:
+    """
+    First evaluates the nature field (504) & index field (500) to check if 'index' is in the plain text
+    Compares this with the 008 field which should contain "1" if index present
+    to_add = "Index mismatch" if the fields don't match and is reported on the spreadsheet
+    """
+    to_add = ""
+    nature_dict = Triage.eval_nature(bib)
+    index_008 = bib.extract_008("Index")
+
+    index_in_008 = False
+    if index_008 == "1":
+      index_in_008 = True
+
+    if index_in_008 != nature_dict["index"]: # Checks for True True, False False
+      to_add += "Index mismatch"
+
+    return to_add
+  
+  @staticmethod
+  def eval_publication(bib: Bib) -> str:
+     """
+     The only unacceptable value in the 008 is xx
+     Missing is returned and outputted to the spreadsheet if this code is present
+     """
+     if bib.extract_008("Place_pub") == 'xx ':
+        return "Missing"
+     else:
+        return "" 
+
+
+columns_to_eval_funcs = { # Output columns that require evaluation by the program and cannot just be stripped from the input spreadsheet
+  'OCLC#' : Triage.eval_OCLC,
   'Floor_Status': Triage.eval_location,
   'Size_Status': Triage.eval_size,
   'Format_Assessment': Triage.eval_format,
-  'Coding_Problems': Triage.eval_coding
+  'Call_Number_Assessment': Triage.eval_call_number,
+  'Brief_Level': Triage.compute_brief_level,
+  'Overall_Condition': Triage.eval_brief_level,
+  'Illustration_Status' : Triage.compare_illustrations,
+  'Bibliography_Status' : Triage.compare_bibliography,
+  'Index_Status' : Triage.compare_index,
+  'Pub_Locn' : Triage.eval_publication,
+  'Coding_Problems': Triage.eval_coding,
 }
