@@ -1,12 +1,10 @@
 from __future__ import annotations
 from collections import deque
-import xmltodict
 from almapipy import AlmaCnxn
 from dotenv import load_dotenv
-import os
-import rule
+import os, rule, sys, traceback, xmltodict
 from logger import bib_logger
-import traceback
+from tkinter import messagebox
 
 env_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(env_path)
@@ -111,9 +109,14 @@ class SubField(Field):
 class Bib:
   
   def __init__(self, mmsID):
-    self.create_bib(mmsID)
-    
+    try:
+      self.create_bib(mmsID)
+    except Exception: # Deals with the error produced by Alma API for keys that do not exist
+      messagebox.showwarning(title="Bad Record", message="mmsID: " + mmsID + " is invalid, please resolve this and try again.")
+      sys.exit() # User must now manually delete or fix the MMS_ID
+
   def create_bib(self, mmsID: str) -> None:
+
     self.bib = alma.bibs.catalog.get(mmsID)
     bib_logger.info(f'Getting information for {mmsID} ...')
     marc_xml = self.bib['anies'][0]
