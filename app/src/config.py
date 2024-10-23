@@ -7,7 +7,7 @@ BATCH_SIZE = 10
 APP_ROOT = os.path.join(ROOT)
 PLATFORM = ""
 
-input_filename = 'results.xlsx'
+input_filename = 'sample.xlsx'
 output_filename = 'results_triaged.xlsx'
 
 # Accounting fot the differences in file structure between Mac and Windows

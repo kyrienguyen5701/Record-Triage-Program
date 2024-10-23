@@ -9,7 +9,7 @@ echo sLinkFile = "%userprofile%\Desktop\Triage Program.lnk" >> CreateShortcut.vb
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut.vbs
 echo oLink.TargetPath = "%folder%\app\main.cmd%" >> CreateShortcut.vbs
 echo oLink.Description = "Triage V2.1" >> CreateShortcut.vbs
-echo oLink.IconLocation = "%folder%\app\src\icon.ico" >> CreateShortcut.vbs
+echo oLink.IconLocation = "%folder%\app\assets\icon.ico" >> CreateShortcut.vbs
 echo oLink.Save >> CreateShortcut.vbs
 cscript CreateShortcut.vbs
 del CreateShortcut.vbs
