@@ -157,6 +157,8 @@ James Gaskell
 
 Added functionality to the setup.cmd file to input and write out the API key to the required environment file. Also deletes the sample.env file to make clean up the src folder without the user having to go into it.
 
+Added automatic shortcut creation to the setup file. The shortcut has a descriptive icon and will make it easier for most users to access main without traversing the project folders
+
 <br>
 
 Project structure:
