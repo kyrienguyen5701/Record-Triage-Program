@@ -13,10 +13,10 @@ echo Writing API key ...
 echo:
 )
 
+:: Creates a vb executable to create .lnk file on the desktop
 @echo off
 IF EXIST %userprofile%\Desktop\Triage Program.lnk (
     echo Desktop Shortcut Located ...
-    :: add empty line to make output more readable
     echo:
 ) ELSE (
 echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
@@ -33,13 +33,14 @@ del CreateShortcut.vbs
 echo Installing requirements ...
 pip install -r %root_dir%\requirements.txt
 
-:: add empty line to make output more readable
 echo:
 echo Creating logging directory ...
 mkdir %app_dir%\logs
 
+echo:
 echo Creating output directory ...
 mkdir %app_dir%\outputs
 
+echo:
 echo Now you can close this window and run main.cmds
 pause
