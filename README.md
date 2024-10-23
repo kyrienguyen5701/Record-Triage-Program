@@ -152,6 +152,11 @@ Changed main.cmd to output the triage spreadsheet into the outputs folder contai
 
 Note: to test the project using default files, the coder should manually create an inputs folder which will be ignored by github. default configuration assumes input files are within this folder but it is not needed for the program to run
 
+Oct 23, 2024 
+James Gaskell
+
+Added functionality to the setup.cmd file to input and write out the API key to the required environment file. Also deletes the sample.env file to make clean up the src folder without the user having to go into it.
+
 <br>
 
 Project structure:
