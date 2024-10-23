@@ -1,6 +1,18 @@
 @Echo off
 set root_dir=..
 set app_dir=%root_dir%\app
+SET folder=%~dp0..\
+
+@echo off
+echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
+echo sLinkFile = "%userprofile%\Desktop\Triage Program.lnk" >> CreateShortcut.vbs
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut.vbs
+echo oLink.TargetPath = "%folder%\app\main.cmd%" >> CreateShortcut.vbs
+echo oLink.Description = "Triage V2.1" >> CreateShortcut.vbs
+echo oLink.IconLocation = "%folder%\app\src\icon.ico" >> CreateShortcut.vbs
+echo oLink.Save >> CreateShortcut.vbs
+cscript CreateShortcut.vbs
+del CreateShortcut.vbs
 
 set /p APIKey="Enter your Alma API key: "
 @echo off
@@ -16,5 +28,5 @@ mkdir %app_dir%\logs
 echo Creating output directory ...
 mkdir %app_dir%\outputs
 
-echo Now you can close this window and run main.cmd
+echo Now you can close this window and run main.cmds
 pause
