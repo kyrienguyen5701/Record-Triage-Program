@@ -25,4 +25,6 @@ echo Input file: %InputFilePath%
 echo Output file: %OutputFilePath%
 py src\main.py -if %InputFilePath% -of %OutputFilePath%
 
-pause
+@echo off
+set params=%*
+start excel %OutputFilePath% /e/%params%
