@@ -2,6 +2,9 @@
 
 Below are the details for V1.0 and V2.0 of the Record Triage Program. Most of the design decisions remain the same so the first section is still highly relevant, but V2.0 has a different structure and introduces new functionality which is explained here.
 
+
+Brief setup and operation instructions can be found [here](https://docs.google.com/document/d/1WY9ovJvOJYdkLxjbK4AQgESZnYK_E-sft7o4BKskDjg/edit?usp=sharing)
+
 <details>
 <summary><b><u><font size="+5">V1.0 05/22 - 05/23</font></u></b></summary>
 
