@@ -1,9 +1,9 @@
 @Echo off
+
 set root_dir=..
 set app_dir=%root_dir%\app
 set folder=%~dp0..\
 
-@echo off
 IF EXIST %app_dir%\src\.env (
     echo API Key located ...
 ) ELSE (
@@ -15,7 +15,6 @@ echo:
 
 
 :: Creates a vb executable to create .lnk file on the desktop
-@echo off
 IF EXIST %userprofile%\Desktop\Triage Program.lnk (
     echo Desktop Shortcut Located ...
     echo:
