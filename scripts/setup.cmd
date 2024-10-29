@@ -31,6 +31,7 @@ del CreateShortcut.vbs
 )
 
 echo Installing requirements ...
+python -m pip install --upgrade pip
 pip install -r %root_dir%\requirements.txt
 
 echo:
