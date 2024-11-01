@@ -13,23 +13,6 @@ echo Writing API key ...
 echo:
 )
 
-
-:: Creates a vb executable to create .lnk file on the desktop
-IF EXIST %userprofile%\Desktop\Triage Program.lnk (
-    echo Desktop Shortcut Located ...
-    echo:
-) ELSE (
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
-echo sLinkFile = "%userprofile%\Desktop\Triage Program.lnk" >> CreateShortcut.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut.vbs
-echo oLink.TargetPath = "%folder%\app\main.cmd%" >> CreateShortcut.vbs
-echo oLink.Description = "Triage V2.1" >> CreateShortcut.vbs
-echo oLink.IconLocation = "%folder%\app\src\assets\icon.ico" >> CreateShortcut.vbs
-echo oLink.Save >> CreateShortcut.vbs
-cscript CreateShortcut.vbs
-del CreateShortcut.vbs
-)
-
 echo Installing requirements ...
 python -m pip install --upgrade pip
 pip install -r %root_dir%\requirements.txt
@@ -42,9 +25,31 @@ echo:
 echo Creating output directories ...
 :: Debugging outputs
 mkdir %app_dir%\outputs
-:: User outputs
-mkdir "%userprofile%\Desktop\Triage Outputs"
 
 echo:
-echo Now you can close this window and run main.cmds
+echo Press enter to select a location for Program Icon:
+pause>Nul
+python src\select_dir.py > %app_dir%\src\assets\homeDir.txt
+set /p IconDir=<%app_dir%\src\assets\homeDir.txt
+
+:: Creates a vb executable to create .lnk file on the desktop
+IF EXIST %iconDir%\Triage Program.lnk (
+    echo Desktop Shortcut Located ...
+    echo:
+) ELSE (
+echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
+echo sLinkFile = "%iconDir%\Triage Program.lnk" >> CreateShortcut.vbs
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut.vbs
+echo oLink.TargetPath = "%folder%\app\main.cmd%" >> CreateShortcut.vbs
+echo oLink.Description = "Triage V2.1.3" >> CreateShortcut.vbs
+echo oLink.IconLocation = "%folder%\app\src\assets\icon.ico" >> CreateShortcut.vbs
+echo oLink.Save >> CreateShortcut.vbs
+cscript CreateShortcut.vbs>Nul
+del CreateShortcut.vbs
+)
+
+:: User outputs
+IF NOT EXIST "%IconDir%\Triage Outputs" mkdir "%IconDir%\Triage Outputs"
+
+echo Now you can close this window and run main.cmd
 pause

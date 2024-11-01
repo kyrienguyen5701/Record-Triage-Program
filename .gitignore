@@ -137,9 +137,8 @@ dmypy.json
 # logging and debug files
 logs
 outputs
-
-# test input files
 inputs
+homeDir.txt
 
 # virtual environment
 venv
