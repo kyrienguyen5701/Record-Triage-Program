@@ -13,7 +13,7 @@ if "%errorlevel%" NEQ "0" (
 if exist "%temp%\getadmin.vbs" del /f /q "%temp%\getadmin.vbs"
 
 :: Configuration for installing
-set py_version=3.8.0
+set py_version=3.12.5
 set installer="%userprofile%\Downloads\python-%py_version%.exe"
 set install_dir="%userprofile%\AppData\Local\Programs\Python\Python_%py_version%"
 set install_path="%userprofile%\AppData\Local\Programs\Python\Python_%py_version%\python.exe"

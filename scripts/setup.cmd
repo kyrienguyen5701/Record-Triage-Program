@@ -32,13 +32,18 @@ pause>Nul
 python src\select_dir.py > %app_dir%\src\assets\homeDir.txt
 set /p IconDir=<%app_dir%\src\assets\homeDir.txt
 
+:: Default if userdoes not select a file in explorer
+IF "%IconDir%"=="C:\" set IconDir=%userprofile%\Desktop
+
+set Shortcut="%iconDir%\Triage Program.lnk"
+
 :: Creates a vb executable to create .lnk file on the desktop
-IF EXIST %iconDir%\Triage Program.lnk (
+IF EXIST "%Shortcut%" (
     echo Desktop Shortcut Located ...
     echo:
 ) ELSE (
 echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
-echo sLinkFile = "%iconDir%\Triage Program.lnk" >> CreateShortcut.vbs
+echo sLinkFile = %Shortcut% >> CreateShortcut.vbs
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut.vbs
 echo oLink.TargetPath = "%folder%\app\main.cmd%" >> CreateShortcut.vbs
 echo oLink.Description = "Triage V2.1.3" >> CreateShortcut.vbs
