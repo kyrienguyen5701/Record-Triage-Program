@@ -164,6 +164,13 @@ Added automatic shortcut creation to the setup file. The shortcut has a descript
 
 Added a Triage Outputs folder to the desktop that holds all the triaged documents. This folder is automatically generated when running the Setup.cmd file and is created again if it is accidentally deleted outside of the program.
 
+Nov 1, 2024 
+James Gaskell
+
+Now allows the user to choose where the output file and program icon are created. This should be desktop in most cases but allows for funkier file structures and personal preference. A text file is now created in assets to store the location of outputs and the shortcut.
+
+Added assets folder to the file structure shown below to store the icon and shortcut directory information.
+
 <br>
 
 Project structure:
@@ -174,6 +181,9 @@ Project structure:
  ┣ 📂logs
  ┣ 📂outputs
  ┣ 📂src
+ ┃ ┣ 📂assets
+ ┃ ┃ ┣ 📜icon.ico
+ ┃ ┃ ┣ 📜homeDir.txt
  ┃ ┣ 📜.env
  ┃ ┣ 📜bib.py
  ┃ ┣ 📜config.py
@@ -188,6 +198,8 @@ Project structure:
  ┗ 📜main.cmd <-- The main program 
 
 📦scripts
+ ┣ 📂src
+ ┃ ┣ 📜.select_dir.py
  ┣ 📜install.cmd
  ┣ 📜setup.cmd
  ┗ 📜update.cmd
