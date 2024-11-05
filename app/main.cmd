@@ -4,7 +4,7 @@
 CD /D %~dp0
 
 set /p InputFilePath="Drag and drop the excel/csv file here (Press ENTER to skip): "
-set /p OutputFileName="Name your new output file WITHOUT SPACE or drop another file for overriding (Press ENTER to add _triaged to the input file): "
+set /p OutputFileName="Name your new output file WITHOUT SPACE or Press ENTER to add _triaged to the input file) "
 
 set /p OutputFileDir=<src\assets\homeDir.txt
 :: Set filename to _triaged

@@ -6,6 +6,7 @@ set folder=%~dp0..\
 
 IF EXIST %app_dir%\src\.env (
     echo API Key located ...
+    IF EXIST %app_dir%\src\sample.env (@DEL %app_dir%\src\sample.env)
 ) ELSE (
 set /p APIKey="Enter your Alma API key: "
 call echo ALMA_API_KEY=%%APIKey%% > %app_dir%\src\.env && IF EXIST %app_dir%\src\sample.env (@DEL %app_dir%\src\sample.env)
