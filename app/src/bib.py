@@ -1,11 +1,10 @@
 from __future__ import annotations
-import xmltodict
+from collections import deque
 from almapipy import AlmaCnxn
 from dotenv import load_dotenv
-import os
-import rule
+import os, rule, sys, traceback, xmltodict
 from logger import bib_logger
-import traceback
+from tkinter import messagebox
 
 env_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(env_path)
@@ -14,6 +13,34 @@ API_KEY = os.getenv('ALMA_API_KEY')
 FORMAT = 'json'
 alma = AlmaCnxn(API_KEY, data_format=FORMAT)
 TAG_FOR_CALL_NUMBER = '050'
+TAG_FOR_OCLC_NUMBER = '035'
+TAG_FOR_ILLUSTRATIONS = '300'
+TAG_FOR_INDEX = '500'
+TAG_FOR_NATURE = '504'
+
+# Lays out the format in which the 008 is received. The numbers correspont to the number of characters in the string that represent that field
+# The order must be maintained in this way
+FORMAT_008 = {
+  "Date_file" : 6,
+  "Pub_type" : 1,
+  "Date_1" : 4,
+  "Date_2" : 4,
+  "Place_pub" : 3,
+  "Illustrations" : 4,
+  "Target_audience" : 1,
+  "Form" : 1,
+  "Nature" : 4,
+  "Gov_pub" : 1,
+  "Conf_pub": 1,
+  "Festschrift": 1,
+  "Index" : 1,
+  "Undef" : 1,
+  "Literary_form" : 1,
+  "Bib" : 1,
+  "Lang" : 3,
+  "Modified_rec" : 1,
+  "Cat_source" : 1
+}
 
 class Field:
   
@@ -82,9 +109,14 @@ class SubField(Field):
 class Bib:
   
   def __init__(self, mmsID):
-    self.create_bib(mmsID)
-    
+    try:
+      self.create_bib(mmsID)
+    except Exception: # Deals with the error produced by Alma API for keys that do not exist
+      messagebox.showwarning(title="Bad Record", message="mmsID: " + mmsID + " is invalid, please resolve this and try again.")
+      sys.exit() # User must now manually delete or fix the MMS_ID
+
   def create_bib(self, mmsID: str) -> None:
+
     self.bib = alma.bibs.catalog.get(mmsID)
     bib_logger.info(f'Getting information for {mmsID} ...')
     marc_xml = self.bib['anies'][0]
@@ -254,6 +286,30 @@ class Bib:
       bib_logger.critical(f'Something wrong with data field {tag}{code} of {self.bib["mms_id"]}.')
       bib_logger.error(traceback.format_exc())
       return DataField(self.bib['mms_id'])
+    
+  def get_control_field(self, tag: str, code=None) -> DataField:
+    """
+    Returns a DataField object -> one of the 3 datafields in each Alma entry dependent on @tag
+
+    Params:
+        tag (str): The @tag to search by (currently one of three - 001, 005, 008)
+        code (str): Not yet implemented. It is not yet clear wether this is necessary for control fields
+
+    Returns:
+        Field: A Field object with the specified @tag
+            or an empty Field if no matching DataField is found.
+
+    """
+    try:
+      for control_field in self.control_field:
+        if control_field['@tag'] == tag:
+          df_obj = ControlField(self.bib['mms_id'], control_field)
+          return df_obj
+    except Exception as e:
+      bib_logger.critical(f'Something wrong with control field {tag}{code} of {self.bib["mms_id"]}.')
+      bib_logger.error(traceback.format_exc())
+      return ControlField(self.bib['mms_id'])
+
   
   def data_field_exists_more_than_once(self, tag: str) -> bool:
     """
@@ -278,3 +334,33 @@ class Bib:
       bib_logger.critical(f'Something wrong with data field {tag} of {self.bib["mms_id"]}.')
       bib_logger.error(traceback.format_exc())
       return False
+  
+  # Try to make sense of the string 008 recieved from the alma bib
+  # Will need changing if alma decides to add more to the 008 field
+  def extract_008(self, type):
+    """
+    Returns the character encoded 008 for the requested field
+
+    Params:
+        type (str): the field we are looking in the 008 for. Determined from the dictionary keys FORMAT_008
+
+    Returns:
+        str: the variable length 008 associated with that field
+
+    """
+    str_008 = deque(self.get_control_field('008').get_text())
+    Item = {}
+
+    for key in FORMAT_008.keys():
+      # print(str_008)
+      temp = ""
+      for chars in range (0, FORMAT_008[key]):
+        try:
+          temp += str_008.popleft()
+        except Exception:
+          temp = ""
+      Item[key] = temp # This creates a dictionary of the 008 entries. Needs appending to a dataframe
+
+    return Item[type] # returns the 008 field for the key passed into the function
+
+

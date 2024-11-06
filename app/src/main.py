@@ -3,8 +3,8 @@ import numpy as np
 from argparse import ArgumentParser
 from bib import Bib
 from triage import columns_to_eval_funcs
-import os
-import warnings
+from tkinter import messagebox
+import os, sys, warnings, expand_columns
 from config import *
 
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
@@ -14,6 +14,13 @@ READ_ENGINES = {
   'xlsx': pd.read_excel,
   'xls': pd.read_excel
 }
+
+def safe_sys_exit():
+  '''
+  Used in the rare case the output excel file is open
+  i.e. the user is attempting to override a file they have already run the program on and it is open
+  '''
+  sys.exit()
 
 def fill_ext(filename):
   '''
@@ -33,13 +40,19 @@ def create_df(filename):
   print('Finish reading\n')
   return df
 
+
 def save_df(df, filename):
   ext = extract_ext(filename)
   print('Writing output ...')
   if ext == 'csv':
     df.to_csv(filename, index=False)
   if ext in ('xlsx', 'xls'):
-    df.to_excel(filename, index=False)
+    try:
+      df.to_excel(filename, index=False)
+    except Exception:
+      messagebox.showwarning(title="File Warning", message="The output file is open, please close it and try again")
+      safe_sys_exit()
+
   print('Finish writing')
 
 def extract_ext(filename):
@@ -57,6 +70,7 @@ parser.add_argument('-of', '--output_file', default=DEFAULT_OUTPUT_FILE, type=st
 args = vars(parser.parse_args())
 
 if __name__ == '__main__':
+
   input_path = os.path.join(ROOT, args['input_file'])
   input_df = create_df(input_path)
   input_df.columns = [col.lower().rstrip() for col in input_df.columns]
@@ -82,13 +96,18 @@ if __name__ == '__main__':
     print(f'Processing mmsID from {start_id} to {end_id} ...')
     batch_df = pd.DataFrame({
       'MMS ID': input_df[mmsid_col][start_id:end_id],
-      'Title': input_df['title'][start_id:end_id],
-      'Brief_Level': 2 * np.ones((df_size,)),
-      'Overall_Condition': np.full((df_size,), np.nan),
-      'Call_Assessment': np.full((df_size,), np.nan),
+      'OCLC#' : np.full((df_size,), np.nan),
       'Floor_Status': np.full((df_size,), np.nan),
       'Size_Status': np.full((df_size,), np.nan),
       'Format_Assessment': np.full((df_size,), np.nan),
+      'Call_Number_Assessment' : np.full((df_size,), np.nan),
+      'Title': input_df['title'][start_id:end_id],
+      'Brief_Level': 2 * np.ones((df_size,)),
+      'Overall_Condition': np.full((df_size,), np.nan),
+      'Illustration_Status': np.full((df_size,), np.nan),
+      'Bibliography_Status': np.full((df_size,), np.nan),
+      'Index_Status': np.full((df_size,), np.nan),
+      'Pub_Locn': np.full((df_size,), np.nan),
       'Coding_Problems': np.full((df_size,), np.nan)
     })
     bib_series = input_df[mmsid_col][start_id:end_id].apply(lambda mmsID: Bib(mmsID))
@@ -97,4 +116,6 @@ if __name__ == '__main__':
       batch_df[col] = vectorized_func(bib_series)
     output_df = pd.concat([output_df, batch_df])
     save_df(output_df, output_path)
+  print("Finalizing ...")
+  expand_columns.expand_columns(output_path)
   
